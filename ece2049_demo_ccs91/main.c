@@ -29,7 +29,7 @@ void main(void)
     long unsigned X= 123456;    // No prefix so number is assumed to be in decimal
     unsigned char myGrade='A';
     unsigned char initial='S';
-    unsigned char your_name[19] = "Carlos Giralt-Ortiz";
+    unsigned char your_name[15] = "Elizabeth Levin";
                                     // What happens when you change the array length?
                                     // What should it be? Do you need null terminator /n ?
 
