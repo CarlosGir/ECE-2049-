@@ -29,7 +29,7 @@ void main(void)
     long unsigned X= 123456;    // No prefix so number is assumed to be in decimal
     unsigned char myGrade='A';
     unsigned char initial='S';
-    //unsigned char your_name[14] = "Your Name Here";
+    unsigned char your_name[19] = "Carlos Giralt-Ortiz";
                                     // What happens when you change the array length?
                                     // What should it be? Do you need null terminator /n ?
 
@@ -59,6 +59,7 @@ void main(void)
     Graphics_drawStringCentered(&g_sContext, "Welcome", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
     Graphics_drawStringCentered(&g_sContext, "to", AUTO_STRING_LENGTH, 48, 25, TRANSPARENT_TEXT);
     Graphics_drawStringCentered(&g_sContext, "ECE2049-A21!", AUTO_STRING_LENGTH, 48, 35, TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, your_name, AUTO_STRING_LENGTH, 48, 45, TRANSPARENT_TEXT);
 
     // Draw a box around everything because it looks nice
     Graphics_Rectangle box = {.xMin = 5, .xMax = 91, .yMin = 5, .yMax = 91 };
