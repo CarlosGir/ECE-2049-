@@ -19,11 +19,13 @@
 #include <math.h>
 #include "peripherals.h"
 #include "midi.h"
+
+//Function prototypes
 void buttonConfig(void);
 int getButtons(void);
 void configUserLED(char val);
 int getPitch(int n);
-void BuzzerOnTimer(int pitch);
+void BuzzerOnPitch(int pitch);
 void initTimer_A(void);
 void setupLEDS(void);
 void setLEDS(int leds);
@@ -31,9 +33,12 @@ void correctLight(void);
 void incorrectLight(void);
 void usrLightsOff(void);
 
+//Global vars
+
 int delay = 0;
 int timer = 0;
 int timeoutReached = 0;
+
 int main(void) {
     int leds = 0;
     int noteIndex = 0;
@@ -42,48 +47,60 @@ int main(void) {
     WDTCTL = WDTPW | WDTHOLD;       // Stop watchdog timer
     setupLEDS();
     buttonConfig();
+
+    //Set up user leds
     P1SEL = P1SEL & ~BIT0;
     P1DIR |= BIT0;
     P4SEL = P4SEL & ~BIT7;
     P4DIR |= BIT7;
 
+    //Set up first delay
+    delay = notes[0][1];
+
+    //notes[][0] = note number
+    //notes[][1] = delay
+    //this is easier than using a struct
+
+    //timer Stuff
+    _enable_interrupt();
+    _BIS_SR(GIE);
+    initTimer_A();
 
 
 
 
-        delay = notes[0][1];
 
+    //Main loop, terminate when out of notes
+    while(noteIndex < 1240){
 
-        _enable_interrupt();
-        _BIS_SR(GIE);
-        initTimer_A();
-
-
-
-
-
-
-        while(noteIndex < 1240){
-
-
+            //get delay of note (regular speed is note/2)
             delay = notes[noteIndex][1] * 2;
+
+            //if correct button pressed
             if (getButtons() == leds && getButtons() != 0 && btnPressed == 0){
                 btnPressed = 1;
                 correctLight();
                 leds = 0;
                 setLEDS(leds);
             }
+
+            //if incorrect button pressed
             else if(getButtons() != leds && getButtons() != 0 && btnPressed == 0){
                 btnPressed = 1;
                 incorrectLight();
             }
 
+            //TODO, make a case where the button is not pressed in time
+
 
 
 
             if (timer >= delay){
+                //get the next note
                 pitch = getPitch(notes[noteIndex][0]);
-                BuzzerOnTimer(pitch);
+                BuzzerOnPitch(pitch);
+
+                //Figure out which led to light up
                 int bShift = notes[noteIndex][0] % 4;
                 if(notes[noteIndex][0] == 0){
                     leds = 0;
@@ -91,14 +108,12 @@ int main(void) {
                 else{
                     leds = 1 << bShift;
                 }
+
                 usrLightsOff();
                 btnPressed = 0;
                 setLEDS(leds);
                 timer = 0;
                 noteIndex++;
-
-
-
 
             }
         }
@@ -109,6 +124,7 @@ void initTimer_A(void)
     {
     TA2CTL = TASSEL_1 + MC_1 + ID_0;
     TA2CCR0 = 327; // 327+1 = 328 ACLK tics = ~1/100 seconds
+    //need to fix timer so that its within required constraints
     TA2CCTL0 = CCIE; // TA2CCR0 interrupt enabled
     }
 
@@ -225,7 +241,7 @@ int getPitch(int n){
 
 }
 
-void BuzzerOnTimer(int pitch)
+void BuzzerOnPitch(int pitch)
 {
     // Initialize PWM output on P3.5, which corresponds to TB0.5
     P3SEL |= BIT5; // Select peripheral output mode for P3.5
