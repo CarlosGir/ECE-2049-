@@ -74,7 +74,7 @@ int main(void) {
     while(noteIndex < 1240){
 
             //get delay of note (regular speed is note/2)
-            delay = notes[noteIndex][1] * 2;
+            delay = notes[noteIndex][1];
 
             //if correct button pressed
             if (getButtons() == leds && getButtons() != 0 && btnPressed == 0){
@@ -123,7 +123,7 @@ int main(void) {
 void initTimer_A(void)
     {
     TA2CTL = TASSEL_1 + MC_1 + ID_0;
-    TA2CCR0 = 327; // 327+1 = 328 ACLK tics = ~1/100 seconds
+    TA2CCR0 = 163; // 163+1 = 164 ACLK tics = ~0.005 seconds
     //need to fix timer so that its within required constraints
     TA2CCTL0 = CCIE; // TA2CCR0 interrupt enabled
     }
