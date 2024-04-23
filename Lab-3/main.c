@@ -123,14 +123,14 @@ int main(void) {
             else if(getLeftButton() == 0){
                 buttonReleased = 1;
             }
-            //Use to detect differences in scroll value
+
 
 
             pollWheel(); //blocking function
 
 
 
-            //Modify day, will later implement for other time aspects
+            //Modify timer depending on number of clicks
 
             if(in_value> 4082 || prev_in_value+80<in_value){
                 if(clicks == 0){
